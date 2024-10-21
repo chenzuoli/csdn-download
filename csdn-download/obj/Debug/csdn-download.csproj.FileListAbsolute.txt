@@ -1,0 +1,14 @@
+E:\VisualStudioProjects\csdn-download\csdn-download\bin\Debug\csdn-download.exe.config
+E:\VisualStudioProjects\csdn-download\csdn-download\bin\Debug\csdn-download.exe
+E:\VisualStudioProjects\csdn-download\csdn-download\bin\Debug\csdn-download.pdb
+E:\VisualStudioProjects\csdn-download\csdn-download\bin\Debug\Newtonsoft.Json.dll
+E:\VisualStudioProjects\csdn-download\csdn-download\bin\Debug\Newtonsoft.Json.xml
+E:\VisualStudioProjects\csdn-download\csdn-download\obj\Debug\csdn-download.csproj.AssemblyReference.cache
+E:\VisualStudioProjects\csdn-download\csdn-download\obj\Debug\csdn_download.Form1.resources
+E:\VisualStudioProjects\csdn-download\csdn-download\obj\Debug\csdn_download.Properties.Resources.resources
+E:\VisualStudioProjects\csdn-download\csdn-download\obj\Debug\csdn-download.csproj.GenerateResource.cache
+E:\VisualStudioProjects\csdn-download\csdn-download\obj\Debug\csdn-download.csproj.CoreCompileInputs.cache
+E:\VisualStudioProjects\csdn-download\csdn-download\obj\Debug\csdn-dow.F867C539.Up2Date
+E:\VisualStudioProjects\csdn-download\csdn-download\obj\Debug\csdn-download.exe
+E:\VisualStudioProjects\csdn-download\csdn-download\obj\Debug\csdn-download.pdb
+E:\VisualStudioProjects\csdn-download\csdn-download\obj\Debug\WinFormWaitDialog.WaitDialog.resources
