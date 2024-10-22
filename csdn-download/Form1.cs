@@ -33,12 +33,106 @@ namespace csdn_download
 
         private void exportBtn_Click(object sender, EventArgs e)
         {
+            // 选择导出文件夹
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            folderDialog.Description = "请选择一个文件夹保存博客文章";
+            DialogResult dialogResult = folderDialog.ShowDialog();
+            string selectedFolder = "";
+            if (dialogResult == DialogResult.OK)
+            {
+                selectedFolder = folderDialog.SelectedPath;
+                Console.WriteLine("选择的文件夹为：" + selectedFolder);
+            } else
+            {
+                MessageBox.Show("请选择文件夹保存博客文章");
+                return;
+            }
 
+            // 获取选择的博客链接
+            var ifSeleted = false;
+            var selectedUrls = new List<string>();
+            for(int i = 0;i < dataGridView1.Rows.Count;i++)
+            {
+                if (Convert.ToBoolean(dataGridView1.Rows[i].Cells[0].Value)  == true) {
+                    ifSeleted = true;
+                    selectedUrls.Add(dataGridView1.Rows[i].Cells[2].Value.ToString());
+                };
+            }
+            if (!ifSeleted) {
+                MessageBox.Show("未选择任务博客文章，请选择后再导出。");
+            }
+
+            // 爬取文章并导出
+            get_articles(selectedFolder, selectedUrls);
+        }
+
+        private async void get_articles(string selectedFolder, List<string> article_urls)
+        {
+            var waitDialog = new WaitDialog((IProgress<string> progress) =>
+            {
+                LongRunningProcess(progress);
+            });
+            waitDialog.Show();
+
+            HttpClient client = new HttpClient();
+            client.Timeout = TimeSpan.FromMinutes(35);
+
+            // http请求超时时间10min
+            var watch = Stopwatch.StartNew();
+            try
+            {
+                using (var tokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(30)))
+                {
+                    for(int i=0; i < article_urls.Count; i++)
+                    {
+                        string article_url = article_urls[i];
+                        string get_article_content_url = "http://localhost:5000/csdn/get_article?csdn_url=" + article_url;
+                        HttpResponseMessage response = await client.GetAsync(get_article_content_url, tokenSource.Token);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string content = await response.Content.ReadAsStringAsync();
+                            Console.WriteLine(content);
+
+                            // 导出到文件夹中
+                            Dictionary<string, string> article_info = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
+                            write_markdown(selectedFolder, article_info);
+                            Thread.Sleep(1000); // sleep 1s
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Error: {response.StatusCode}, csdn download url: {article_url}");
+                        }
+                    }
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                MessageBox.Show($"{watch.Elapsed} s 任务超时");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"请求错误：{ex.ToString()}");
+            }
+            finally
+            {
+                if (waitDialog != null)
+                {
+                    // 关闭【加载中】进度条
+                    waitDialog.Close();
+                }
+            }
+        }
+
+        private void write_markdown(string selectedFolder, Dictionary<string, string>  article_info )
+        {
+            // 写markdown文件
+            string content = article_info["content"];
+            string title = article_info["title"].Replace("-CSDN博客", "");
+            File.WriteAllText(Path.Combine(selectedFolder, title + ".md"),  content);
         }
 
         private  void viewBlogBtn_Click(object sender, EventArgs e)
         {
-
             // 加载中
             var waitDialog = new WaitDialog((IProgress<string> progress) =>
             {
